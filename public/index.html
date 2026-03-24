@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weekly Meal Planner</title>
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+<header class="app-header">
+  <h1>&#127869; Meal Planner</h1>
+  <nav class="header-nav">
+    <a href="/index.html"    class="nav-link">Planner</a>
+    <a href="/recipes.html"  class="nav-link">Recipes</a>
+    <a href="/shopping.html" class="nav-link">Shopping</a>
+  </nav>
+  <div class="header-right">
+    <div class="week-nav">
+      <button class="btn-week-nav" id="btn-prev-week" title="Previous week">&#8249;</button>
+      <span class="week-label" id="week-label"></span>
+      <button class="btn-week-nav" id="btn-next-week" title="Next week">&#8250;</button>
+    </div>
+    <button class="btn-search" id="btn-search">&#128269; Search Recipes</button>
+  </div>
+</header>
+
+<div class="planner-wrapper">
+  <div class="planner" id="planner"></div>
+</div>
+
+<!-- Search modal (Phase 1 placeholder — rebuilt in Phase 3) -->
+<div class="modal-overlay" id="searchModal">
+  <div class="modal">
+    <div class="modal-icon">&#128269;</div>
+    <h2>Recipe Search</h2>
+    <p>Recipe database search is coming soon!<br>
+       You'll be able to browse, filter, and add meals from a full recipe library.</p>
+    <button class="modal-close" id="modal-close-btn">Got it</button>
+  </div>
+</div>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+{
+  "name": "meal-planner-api",
+  "version": "1.0.0",
+  "description": "Azure Functions API for the Meal Planner app",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "func start",
+    "lint": "eslint src/"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@azure/cosmos": "^4.1.1",
+    "@azure/functions": "^4.5.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0"
+  }
+}

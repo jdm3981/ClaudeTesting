@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+
+# Azure Functions local settings (contains secrets)
+api/local.settings.json
+
+# Environment files
+.env
+.env.*
+
+# Build output
+dist/
+out/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+*.suo
+*.user
