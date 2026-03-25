@@ -1,8 +1,9 @@
 /**
  * Planner grid builder and drag-and-drop logic.
  *
- * Phase 2: buildPlanner() accepts an optional recipeList from the API.
- * Phase 3: promptAdd() replaced by openSearchModal().
+ * Phase 4: buildPlanner() takes a plan object + recipe map.
+ *          Cards carry dataset.recipeId for DOM serialisation.
+ *          Dispatches "plan-changed" on document after any mutation.
  */
 
 import { el, escHtml } from './utils.js';
@@ -22,19 +23,22 @@ let touchOffY   = 0;
  * Build (or rebuild) the planner grid inside #planner.
  * Clears existing content first, so safe to call on week navigation.
  *
- * @param {Array<{id:string, name:string, emoji:string, tags:string[]}>} [recipeList]
- *   Flat list of recipes from the API. When provided, the first 7 are used as
- *   placeholder cards per meal type so the grid is never empty. When absent
- *   (API unavailable) the grid renders empty cells.
+ * @param {object|null} plan
+ *   Plan object from the API ({ weekStart, days: [{date, lunch:[id], dinner:[id]}] }),
+ *   or null for an empty week.
+ * @param {Map<string,object>} recipeMap
+ *   Map of recipe id → recipe object for looking up display data.
  * @param {function(HTMLElement): void} [onAddMeal]
  *   Called with the cell element when the user clicks "+ Add meal".
- *   Defaults to a no-op; main.js wires this to openSearchModal.
  */
-export function buildPlanner(recipeList = [], onAddMeal = () => {}) {
+export function buildPlanner(plan, recipeMap, onAddMeal = () => {}) {
   const planner = document.getElementById('planner');
   planner.innerHTML = '';
 
   const days = getDays();
+
+  // Index plan days by date for fast lookup
+  const daysByDate = new Map((plan?.days ?? []).map(d => [d.date, d]));
 
   // Row 0: corner cell + day headers
   planner.appendChild(el('div', { class: 'corner' }));
@@ -46,27 +50,19 @@ export function buildPlanner(recipeList = [], onAddMeal = () => {}) {
     planner.appendChild(hdr);
   });
 
-  // Split recipe list into two halves: first half → lunch, second → dinner
-  // (Phase 4 will replace this with actual saved plan data)
-  const lunchRecipes  = recipeList.slice(0, 7);
-  const dinnerRecipes = recipeList.slice(7, 14);
-
   // Rows 1–2: Lunch, Dinner
   ['lunch', 'dinner'].forEach(type => {
-    const pool = type === 'lunch' ? lunchRecipes : dinnerRecipes;
     planner.appendChild(
       el('div', { class: `row-label ${type}`, text: type === 'lunch' ? 'Lunch' : 'Dinner' })
     );
-    days.forEach((_d, i) => {
-      const cell = makeCell(type, i, onAddMeal);
-      const recipe = pool[i];
-      if (recipe) {
-        appendCard(cell, {
-          name:  recipe.name,
-          emoji: recipe.emoji || '🍽',
-          tag:   recipe.tags?.[0] ?? '',
-        });
-      }
+    days.forEach(d => {
+      const cell  = makeCell(type, days.indexOf(d), onAddMeal);
+      const saved = daysByDate.get(d.fullDate);
+      const ids   = saved?.[type] ?? [];
+      ids.forEach(id => {
+        const recipe = recipeMap.get(id);
+        if (recipe) appendCard(cell, { name: recipe.name, emoji: recipe.emoji || '🍽', tag: recipe.tags?.[0] ?? '' }, id);
+      });
       planner.appendChild(cell);
     });
   });
@@ -95,7 +91,10 @@ function makeCell(type, dayIdx, onAddMeal) {
   cell.addEventListener('drop', e => {
     e.preventDefault();
     cell.classList.remove('drag-over');
-    if (draggedCard) cell.insertBefore(draggedCard, cell.querySelector('.add-meal-btn'));
+    if (draggedCard) {
+      cell.insertBefore(draggedCard, cell.querySelector('.add-meal-btn'));
+      _planChanged();
+    }
   });
 
   return cell;
@@ -103,14 +102,20 @@ function makeCell(type, dayIdx, onAddMeal) {
 
 // ── Card ───────────────────────────────────────────────────────────────────
 
+function _planChanged() {
+  document.dispatchEvent(new CustomEvent('plan-changed'));
+}
+
 /**
  * Create a draggable recipe card element.
  * @param {{ name: string, emoji: string, tag: string }} meal
+ * @param {string|null} [recipeId]  Stored on dataset.recipeId for plan serialisation.
  * @returns {HTMLElement}
  */
-export function makeCard(meal) {
+export function makeCard(meal, recipeId = null) {
   const card = el('div', { class: 'recipe-card' });
   card.draggable = true;
+  if (recipeId) card.dataset.recipeId = recipeId;
   card.innerHTML =
     `<span class="card-emoji">${meal.emoji}</span>` +
     `<div class="card-body">` +
@@ -122,6 +127,7 @@ export function makeCard(meal) {
   card.querySelector('.card-remove').addEventListener('click', e => {
     e.stopPropagation();
     card.remove();
+    _planChanged();
   });
 
   // Mouse DnD
@@ -148,9 +154,10 @@ export function makeCard(meal) {
  * Insert a card before the "+ Add meal" button in a cell.
  * @param {HTMLElement} cell
  * @param {{ name: string, emoji: string, tag: string }} meal
+ * @param {string|null} [recipeId]
  */
-export function appendCard(cell, meal) {
-  cell.insertBefore(makeCard(meal), cell.querySelector('.add-meal-btn'));
+export function appendCard(cell, meal, recipeId = null) {
+  cell.insertBefore(makeCard(meal, recipeId), cell.querySelector('.add-meal-btn'));
 }
 
 // ── Touch drag handlers ────────────────────────────────────────────────────
@@ -195,7 +202,10 @@ function onTouchEnd(e) {
   document.querySelectorAll('.drag-over').forEach(c => c.classList.remove('drag-over'));
 
   const cell = target?.closest('.meal-cell');
-  if (cell) cell.insertBefore(touchCard, cell.querySelector('.add-meal-btn'));
+  if (cell) {
+    cell.insertBefore(touchCard, cell.querySelector('.add-meal-btn'));
+    _planChanged();
+  }
 
   touchCard = null;
   e.preventDefault();

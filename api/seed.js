@@ -297,6 +297,11 @@ async function main() {
     id: CONTAINER_ID,
     partitionKey: { paths: ['/type'] },
   });
+  // Ensure plans container exists (partition key is /weekStart per data model)
+  await database.containers.createIfNotExists({
+    id: 'plans',
+    partitionKey: { paths: ['/weekStart'] },
+  });
 
   const container = database.container(CONTAINER_ID);
   const now       = new Date().toISOString();

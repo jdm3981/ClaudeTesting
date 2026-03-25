@@ -75,7 +75,35 @@ export function getWeekLabel() {
   return `Week of ${startStr} \u2013 ${endStr}`;
 }
 
-// ── Sample data (Phase 1 placeholder — replaced in Phase 2 by API) ─────────
+// ── Plan DOM serialisation ─────────────────────────────────────────────────
+
+/**
+ * Read the current planner grid and return a plan object ready to PUT.
+ * Each .meal-cell stores recipe IDs on its .recipe-card elements via dataset.recipeId.
+ * @param {string} weekStart  YYYY-MM-DD
+ * @returns {{ weekStart: string, days: Array<{date,lunch,dinner}> }}
+ */
+export function readPlanFromDOM(weekStart) {
+  const days = getDays();
+  return {
+    weekStart,
+    days: days.map((d, i) => ({
+      date:   d.fullDate,
+      lunch:  _cellRecipeIds('lunch',  i),
+      dinner: _cellRecipeIds('dinner', i),
+    })),
+  };
+}
+
+function _cellRecipeIds(type, dayIdx) {
+  const cell = document.querySelector(`.meal-cell[data-type="${type}"][data-day="${dayIdx}"]`);
+  if (!cell) return [];
+  return [...cell.querySelectorAll('.recipe-card')]
+    .map(c => c.dataset.recipeId)
+    .filter(Boolean);
+}
+
+// ── Sample data (Phase 1 placeholder — no longer used in rendering) ─────────
 
 export const SAMPLE = {
   lunch: [

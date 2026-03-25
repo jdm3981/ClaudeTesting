@@ -9,7 +9,7 @@ A family meal planning web app with a recipe database, weekly planner, and shopp
 | 1 | Scaffolding + local dev setup | ✅ Complete |
 | 2 | Recipe CRUD API + Cosmos DB | ✅ Complete |
 | 3 | Search modal + tag filtering | ✅ Complete |
-| 4 | Weekly plan persistence | ⬜ Not started |
+| 4 | Weekly plan persistence | ✅ Complete |
 | 5 | Shopping list generation + export | ⬜ Not started |
 | 6 | Azure deployment + IaC | ⬜ Not started |
 
@@ -84,12 +84,12 @@ meal-planner/
 │       │   ├── health.js          ✅ Done
 │       │   ├── recipes.js         ✅ Done
 │       │   ├── recipe.js          ✅ Done
-│       │   ├── plan.js            ← Phase 4
+│       │   ├── plan.js            ✅ Done
 │       │   └── shopping-list.js   ← Phase 5
 │       ├── db/
 │       │   ├── cosmos-client.js   ✅ Done
 │       │   ├── recipes-repo.js    ✅ Done
-│       │   └── plans-repo.js      ← Phase 4
+│       │   └── plans-repo.js      ✅ Done
 │       └── lib/
 │           ├── shopping-aggregator.js ← Phase 5
 │           └── validate.js            ✅ Done
