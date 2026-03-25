@@ -7,5 +7,4 @@ require('./functions/recipe');
 
 require('./functions/plan');
 
-// Phase 5+
-// require('./functions/shopping-list');
+require('./functions/shopping-list');

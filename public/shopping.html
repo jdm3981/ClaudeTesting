@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopping List – Meal Planner</title>
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+<header class="app-header">
+  <h1>&#127869; Meal Planner</h1>
+  <nav class="header-nav">
+    <a href="/index.html"    class="nav-link">Planner</a>
+    <a href="/recipes.html"  class="nav-link">Recipes</a>
+    <a href="/shopping.html" class="nav-link">Shopping</a>
+  </nav>
+  <div class="header-right">
+    <div class="week-nav">
+      <button class="btn-week-nav" id="btn-prev-week" title="Previous week">&#8249;</button>
+      <span class="week-label" id="week-label"></span>
+      <button class="btn-week-nav" id="btn-next-week" title="Next week">&#8250;</button>
+    </div>
+  </div>
+</header>
+
+<div class="page-wrapper">
+  <div class="shopping-page-header">
+    <h2 class="page-title">&#128722; Shopping List</h2>
+    <div class="shopping-controls">
+      <button class="btn-secondary" id="btn-clear-checked">Clear checked</button>
+      <button class="btn-primary"   id="btn-export">Export JSON</button>
+    </div>
+  </div>
+
+  <div id="shopping-list-container">
+    <div class="empty-state">
+      <div style="font-size:2rem">&#128722;</div>
+      <p>Loading…</p>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="js/shopping.js"></script>
+</body>
+</html>
