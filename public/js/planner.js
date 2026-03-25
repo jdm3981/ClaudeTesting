@@ -1,13 +1,12 @@
 /**
  * Planner grid builder and drag-and-drop logic.
  *
- * Phase 1: uses SAMPLE data from state.js directly.
- * Phase 2: buildPlanner() will accept (weekPlan, recipeMap) parameters.
+ * Phase 2: buildPlanner() accepts an optional recipeList from the API.
  * Phase 3: promptAdd() replaced by openSearchModal().
  */
 
 import { el, escHtml } from './utils.js';
-import { getDays, SAMPLE } from './state.js';
+import { getDays } from './state.js';
 
 // ── Drag state (module-scoped) ─────────────────────────────────────────────
 
@@ -22,8 +21,13 @@ let touchOffY   = 0;
 /**
  * Build (or rebuild) the planner grid inside #planner.
  * Clears existing content first, so safe to call on week navigation.
+ *
+ * @param {Array<{id:string, name:string, emoji:string, tags:string[]}>} [recipeList]
+ *   Flat list of recipes from the API. When provided, the first 7 are used as
+ *   placeholder cards per meal type so the grid is never empty. When absent
+ *   (API unavailable) the grid renders empty cells.
  */
-export function buildPlanner() {
+export function buildPlanner(recipeList = []) {
   const planner = document.getElementById('planner');
   planner.innerHTML = '';
 
@@ -39,14 +43,27 @@ export function buildPlanner() {
     planner.appendChild(hdr);
   });
 
+  // Split recipe list into two halves: first half → lunch, second → dinner
+  // (Phase 4 will replace this with actual saved plan data)
+  const lunchRecipes  = recipeList.slice(0, 7);
+  const dinnerRecipes = recipeList.slice(7, 14);
+
   // Rows 1–2: Lunch, Dinner
   ['lunch', 'dinner'].forEach(type => {
+    const pool = type === 'lunch' ? lunchRecipes : dinnerRecipes;
     planner.appendChild(
       el('div', { class: `row-label ${type}`, text: type === 'lunch' ? 'Lunch' : 'Dinner' })
     );
     days.forEach((_d, i) => {
       const cell = makeCell(type, i);
-      (SAMPLE[type][i] || []).forEach(meal => appendCard(cell, meal));
+      const recipe = pool[i];
+      if (recipe) {
+        appendCard(cell, {
+          name:  recipe.name,
+          emoji: recipe.emoji || '🍽',
+          tag:   recipe.tags?.[0] ?? '',
+        });
+      }
       planner.appendChild(cell);
     });
   });

@@ -5,6 +5,7 @@
 
 import { buildPlanner } from './planner.js';
 import { getWeekLabel, nextWeek, prevWeek } from './state.js';
+import { recipes as recipesApi } from './api.js';
 
 // ── Week label ─────────────────────────────────────────────────────────────
 
@@ -14,16 +15,21 @@ function updateWeekLabel() {
 
 // ── Week navigation ────────────────────────────────────────────────────────
 
+function refreshPlanner() {
+  updateWeekLabel();
+  recipesApi.list({ limit: 50 })
+    .then(recipeList => buildPlanner(recipeList))
+    .catch(() => buildPlanner([]));
+}
+
 document.getElementById('btn-prev-week').addEventListener('click', () => {
   prevWeek();
-  updateWeekLabel();
-  buildPlanner();
+  refreshPlanner();
 });
 
 document.getElementById('btn-next-week').addEventListener('click', () => {
   nextWeek();
-  updateWeekLabel();
-  buildPlanner();
+  refreshPlanner();
 });
 
 // ── Search modal (Phase 1 placeholder) ────────────────────────────────────
@@ -51,4 +57,8 @@ document.querySelector(`.nav-link[href="${location.pathname}"]`)
 // ── Init ───────────────────────────────────────────────────────────────────
 
 updateWeekLabel();
-buildPlanner();
+
+// Load recipes from API; fall back to empty grid if API is unavailable.
+recipesApi.list({ limit: 50 })
+  .then(recipeList => buildPlanner(recipeList))
+  .catch(() => buildPlanner([]));

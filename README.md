@@ -7,7 +7,7 @@ A family meal planning web app with a recipe database, weekly planner, and shopp
 | Phase | Description | Status |
 |---|---|---|
 | 1 | Scaffolding + local dev setup | ✅ Complete |
-| 2 | Recipe CRUD API + Cosmos DB | ⬜ Not started |
+| 2 | Recipe CRUD API + Cosmos DB | ✅ Complete |
 | 3 | Search modal + tag filtering | ⬜ Not started |
 | 4 | Weekly plan persistence | ⬜ Not started |
 | 5 | Shopping list generation + export | ⬜ Not started |
@@ -82,17 +82,17 @@ meal-planner/
 │       ├── index.js               ← Register functions here
 │       ├── functions/
 │       │   ├── health.js          ✅ Done
-│       │   ├── recipes.js         ← Phase 2
-│       │   ├── recipe.js          ← Phase 2
+│       │   ├── recipes.js         ✅ Done
+│       │   ├── recipe.js          ✅ Done
 │       │   ├── plan.js            ← Phase 4
 │       │   └── shopping-list.js   ← Phase 5
 │       ├── db/
-│       │   ├── cosmos-client.js   ← Phase 2
-│       │   ├── recipes-repo.js    ← Phase 2
+│       │   ├── cosmos-client.js   ✅ Done
+│       │   ├── recipes-repo.js    ✅ Done
 │       │   └── plans-repo.js      ← Phase 4
 │       └── lib/
 │           ├── shopping-aggregator.js ← Phase 5
-│           └── validate.js            ← Phase 2
+│           └── validate.js            ✅ Done
 │
 ├── infra/                         ← Bicep IaC (Phase 6)
 │   ├── main.bicep
@@ -240,7 +240,7 @@ Computed on request by resolving recipe IDs and aggregating ingredients. `checke
 - Implement `recipes-repo.js` with `listRecipes()`, `getRecipe()`, `createRecipe()`, `updateRecipe()`, `deleteRecipe()`
 - Implement `api/src/functions/recipes.js` (GET list + POST) and `recipe.js` (GET/PUT/DELETE by id)
 - Implement `api/src/lib/validate.js` for recipe schema validation
-- Seed database with sample recipes via `infra/scripts/seed.js`
+- Seed database with sample recipes via `cd api && npm run seed`
 - Wire `public/js/api.js` + `state.js` to load recipes from API instead of the `SAMPLE` constant
 - **Done when:** grid renders from API data, CRUD works via curl
 

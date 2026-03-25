@@ -5,7 +5,8 @@
   "main": "src/index.js",
   "scripts": {
     "start": "func start",
-    "lint": "eslint src/"
+    "lint": "eslint src/",
+    "seed": "node seed.js"
   },
   "engines": {
     "node": ">=20"
