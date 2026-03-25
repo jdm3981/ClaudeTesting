@@ -29,14 +29,18 @@
   <div class="planner" id="planner"></div>
 </div>
 
-<!-- Search modal (Phase 1 placeholder — rebuilt in Phase 3) -->
+<!-- Search modal -->
 <div class="modal-overlay" id="searchModal">
-  <div class="modal">
-    <div class="modal-icon">&#128269;</div>
-    <h2>Recipe Search</h2>
-    <p>Recipe database search is coming soon!<br>
-       You'll be able to browse, filter, and add meals from a full recipe library.</p>
-    <button class="modal-close" id="modal-close-btn">Got it</button>
+  <div class="modal search-modal">
+    <div class="search-modal-header">
+      <h2>&#128269; Add Recipe</h2>
+      <button class="search-modal-close" id="modal-close-btn" title="Close">&#10005;</button>
+    </div>
+    <input class="search-input" id="search-input" type="search" placeholder="Search by name or ingredient…" autocomplete="off">
+    <div class="tag-filter-row" id="tag-filters"></div>
+    <div class="search-results" id="search-results">
+      <div class="search-empty">Start typing to find a recipe</div>
+    </div>
   </div>
 </div>
 

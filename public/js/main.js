@@ -3,9 +3,10 @@
  * Wires the header controls and initialises the grid.
  */
 
-import { buildPlanner } from './planner.js';
+import { buildPlanner, appendCard } from './planner.js';
 import { getWeekLabel, nextWeek, prevWeek } from './state.js';
 import { recipes as recipesApi } from './api.js';
+import { openSearchModal } from './search-modal.js';
 
 // ── Week label ─────────────────────────────────────────────────────────────
 
@@ -15,11 +16,21 @@ function updateWeekLabel() {
 
 // ── Week navigation ────────────────────────────────────────────────────────
 
+function onAddMeal(cell) {
+  openSearchModal(cell, recipe => {
+    appendCard(cell, {
+      name:  recipe.name,
+      emoji: recipe.emoji || '🍽',
+      tag:   recipe.tags?.[0] ?? '',
+    });
+  });
+}
+
 function refreshPlanner() {
   updateWeekLabel();
   recipesApi.list({ limit: 50 })
-    .then(recipeList => buildPlanner(recipeList))
-    .catch(() => buildPlanner([]));
+    .then(recipeList => buildPlanner(recipeList, onAddMeal))
+    .catch(() => buildPlanner([], onAddMeal));
 }
 
 document.getElementById('btn-prev-week').addEventListener('click', () => {
@@ -32,21 +43,13 @@ document.getElementById('btn-next-week').addEventListener('click', () => {
   refreshPlanner();
 });
 
-// ── Search modal (Phase 1 placeholder) ────────────────────────────────────
-
-const searchModal = document.getElementById('searchModal');
+// ── Search modal ────────────────────────────────────────────────────────────
+// Opened from the header "Search Recipes" button (no target cell — browse mode).
+// Also opened from "+ Add meal" buttons via onAddMeal() above.
 
 document.getElementById('btn-search').addEventListener('click', () => {
-  searchModal.classList.add('show');
-});
-document.getElementById('modal-close-btn').addEventListener('click', () => {
-  searchModal.classList.remove('show');
-});
-searchModal.addEventListener('click', e => {
-  if (e.target === searchModal) searchModal.classList.remove('show');
-});
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') searchModal.classList.remove('show');
+  // No specific cell — open in browse-only mode (onSelect is a no-op).
+  openSearchModal(null, () => {});
 });
 
 // ── Highlight active nav link ──────────────────────────────────────────────
@@ -60,5 +63,5 @@ updateWeekLabel();
 
 // Load recipes from API; fall back to empty grid if API is unavailable.
 recipesApi.list({ limit: 50 })
-  .then(recipeList => buildPlanner(recipeList))
-  .catch(() => buildPlanner([]));
+  .then(recipeList => buildPlanner(recipeList, onAddMeal))
+  .catch(() => buildPlanner([], onAddMeal));

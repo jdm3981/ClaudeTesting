@@ -8,7 +8,7 @@ A family meal planning web app with a recipe database, weekly planner, and shopp
 |---|---|---|
 | 1 | Scaffolding + local dev setup | ✅ Complete |
 | 2 | Recipe CRUD API + Cosmos DB | ✅ Complete |
-| 3 | Search modal + tag filtering | ⬜ Not started |
+| 3 | Search modal + tag filtering | ✅ Complete |
 | 4 | Weekly plan persistence | ⬜ Not started |
 | 5 | Shopping list generation + export | ⬜ Not started |
 | 6 | Azure deployment + IaC | ⬜ Not started |

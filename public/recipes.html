@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recipe Library – Meal Planner</title>
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+<header class="app-header">
+  <h1>&#127869; Meal Planner</h1>
+  <nav class="header-nav">
+    <a href="/index.html"    class="nav-link">Planner</a>
+    <a href="/recipes.html"  class="nav-link">Recipes</a>
+    <a href="/shopping.html" class="nav-link">Shopping</a>
+  </nav>
+  <div class="header-right">
+    <button class="btn-search" id="btn-add-recipe">&#43; Add Recipe</button>
+  </div>
+</header>
+
+<div class="page-wrapper">
+  <div class="recipes-page-header">
+    <h2 class="page-title">Recipe Library</h2>
+    <input class="search-input" id="library-search" type="search" placeholder="Filter recipes…" autocomplete="off">
+  </div>
+  <div class="tag-filter-row" id="tag-filters"></div>
+  <div class="recipes-grid" id="recipes-grid">
+    <div class="search-empty">Loading recipes…</div>
+  </div>
+</div>
+
+<!-- Add / Edit recipe modal -->
+<div class="modal-overlay" id="formModal">
+  <div class="modal form-modal">
+    <div class="form-modal-header">
+      <h2 id="form-title">Add Recipe</h2>
+      <button class="search-modal-close" id="form-close-btn" title="Close">&#10005;</button>
+    </div>
+
+    <div class="form-body">
+      <div class="form-row">
+        <div class="form-group" style="flex:3">
+          <label for="f-name">Name *</label>
+          <input class="form-control" id="f-name" type="text" placeholder="e.g. Butter Chicken">
+        </div>
+        <div class="form-group" style="flex:1">
+          <label for="f-emoji">Emoji</label>
+          <input class="form-control" id="f-emoji" type="text" maxlength="2" placeholder="🍛">
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-bottom:14px">
+        <label for="f-description">Description</label>
+        <textarea class="form-control" id="f-description" placeholder="Short description…"></textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="f-tags">Tags <span style="font-weight:400;text-transform:none">(comma-separated)</span></label>
+          <input class="form-control" id="f-tags" type="text" placeholder="indian, gluten-free, curry">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="f-servings">Servings</label>
+          <input class="form-control" id="f-servings" type="number" min="1" placeholder="4">
+        </div>
+        <div class="form-group">
+          <label for="f-prep">Prep (min)</label>
+          <input class="form-control" id="f-prep" type="number" min="0" placeholder="20">
+        </div>
+        <div class="form-group">
+          <label for="f-cook">Cook (min)</label>
+          <input class="form-control" id="f-cook" type="number" min="0" placeholder="35">
+        </div>
+      </div>
+
+      <div class="form-section-title">Ingredients</div>
+      <table class="ingredients-table" id="ingredients-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th style="width:80px">Qty</th>
+            <th style="width:80px">Unit</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="ingredients-body"></tbody>
+      </table>
+      <button class="btn-add-ing" id="btn-add-ing">&#43; Add ingredient</button>
+    </div>
+
+    <div class="form-footer">
+      <button class="btn-secondary" id="form-cancel-btn">Cancel</button>
+      <button class="btn-primary" id="form-save-btn">Save Recipe</button>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="js/recipes-page.js"></script>
+</body>
+</html>

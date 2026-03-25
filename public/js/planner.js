@@ -26,8 +26,11 @@ let touchOffY   = 0;
  *   Flat list of recipes from the API. When provided, the first 7 are used as
  *   placeholder cards per meal type so the grid is never empty. When absent
  *   (API unavailable) the grid renders empty cells.
+ * @param {function(HTMLElement): void} [onAddMeal]
+ *   Called with the cell element when the user clicks "+ Add meal".
+ *   Defaults to a no-op; main.js wires this to openSearchModal.
  */
-export function buildPlanner(recipeList = []) {
+export function buildPlanner(recipeList = [], onAddMeal = () => {}) {
   const planner = document.getElementById('planner');
   planner.innerHTML = '';
 
@@ -55,7 +58,7 @@ export function buildPlanner(recipeList = []) {
       el('div', { class: `row-label ${type}`, text: type === 'lunch' ? 'Lunch' : 'Dinner' })
     );
     days.forEach((_d, i) => {
-      const cell = makeCell(type, i);
+      const cell = makeCell(type, i, onAddMeal);
       const recipe = pool[i];
       if (recipe) {
         appendCard(cell, {
@@ -71,13 +74,13 @@ export function buildPlanner(recipeList = []) {
 
 // ── Cell ───────────────────────────────────────────────────────────────────
 
-function makeCell(type, dayIdx) {
+function makeCell(type, dayIdx, onAddMeal) {
   const cell = el('div', { class: `meal-cell ${type}-cell` });
   cell.dataset.type = type;
   cell.dataset.day  = dayIdx;
 
   const addBtn = el('button', { class: 'add-meal-btn', text: '+ Add meal' });
-  addBtn.addEventListener('click', () => promptAdd(cell));
+  addBtn.addEventListener('click', () => onAddMeal(cell));
   cell.appendChild(addBtn);
 
   // Mouse DnD — drop target
@@ -148,16 +151,6 @@ export function makeCard(meal) {
  */
 export function appendCard(cell, meal) {
   cell.insertBefore(makeCard(meal), cell.querySelector('.add-meal-btn'));
-}
-
-// ── Add meal (Phase 1 prompt — replaced by search modal in Phase 3) ────────
-
-function promptAdd(cell) {
-  const name = prompt('Meal name:');
-  if (!name?.trim()) return;
-  const emojis = ['🍽','🥘','🍜','🥗','🍱','🥙','🧆','🥚','🍣','🥩','🍞','🫕'];
-  const emoji  = emojis[Math.floor(Math.random() * emojis.length)];
-  appendCard(cell, { name: name.trim(), emoji, tag: 'Custom' });
 }
 
 // ── Touch drag handlers ────────────────────────────────────────────────────
